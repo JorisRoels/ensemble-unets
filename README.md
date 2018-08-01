@@ -12,7 +12,7 @@ Secondly, three 2D U-Net autoencoders (i.e. no skip connections) are trained fro
     - tensorboardX (for TensorBoard usage)
     - tifffile (for data loading)
     - [imgaug](https://github.com/aleju/imgaug) (data augmentation) 
-- EPFL data should be in the [data](https://github.com/JorisRoels/ensemble-unets/data) folder for testing the demo script. This data is located at /g/kreshuk/data/epfl. 
+- EPFL data should be in the [data](data) folder for testing the demo script. This data is located at /g/kreshuk/data/epfl. 
 
 ## Instructions
-The algorithm can be tested by running [train_models.py](https://github.com/JorisRoels/ensemble-unets/train/train_models.py). I tried to document most of the code, but if you have any questions, don't hesitate to ask me! 
+The algorithm can be tested by running [train_models.py](train/train_models.py). I tried to document most of the code, but if you have any questions, don't hesitate to ask me! 
