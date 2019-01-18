@@ -19,36 +19,25 @@ class ToLongTensor(object):
         else:
             return torch.LongTensor(x.copy())
 
-class RemoveChannelAxis(object):
-
-    def __call__(self, x):
-
-        return x[0, ...]
-
 class AddChannelAxis(object):
 
     def __call__(self, x):
 
         return x[np.newaxis, ...]
 
-class SimulateBlocks(object):
+class AddNoise(object):
 
-    def __init__(self, prob=0.5, min_block_size=16, max_block_size=64):
+    def __init__(self, prob=0.5, sigma_min=0.0, sigma_max=1.0):
 
         self.prob = prob
-        self.min_block_size = min_block_size
-        self.max_block_size = max_block_size
+        self.sigma_min = sigma_min
+        self.sigma_max = sigma_max
 
     def __call__(self, x):
 
-        if rnd.rand()<self.prob:
-            width = rnd.randint(self.min_block_size, self.max_block_size)
-            height = rnd.randint(self.min_block_size, self.max_block_size)
-            posx = rnd.randint(0, x.shape[1]-width+1)
-            posy = rnd.randint(0, x.shape[2]-height+1)
-            x_temp = x.copy()
-            x_temp[:, posx:posx + width, posy:posy + height] = 0
-            return x_temp
+        if rnd.rand() < self.prob:
+            sigma = rnd.uniform(self.sigma_min, self.sigma_max)
+            return x + rnd.normal(0, sigma, x.shape)
         else:
             return x
 
@@ -84,8 +73,10 @@ class RandomDeformations(object):
             self.seed = 0
         if rnd.rand() < self.prob:
             s = rnd.randint(0,2**32)
-            self.augmenter.reseed(s)
-            x_aug = self.augmenter.augment_images(x.copy())
+            x_aug = np.zeros_like(x)
+            for i in range(x.shape[0]):
+                self.augmenter.reseed(s)
+                x_aug[i:i+1,...] = self.augmenter.augment_images(x[i:i+1,...].copy())
             if self.thr:
                 x_aug = np.asarray(x_aug>0.5, float) # avoid weird noise artifacts
             return x_aug
@@ -167,7 +158,7 @@ class FlipZ(object):
         if self.seed == 2**32:
             self.seed = 0
         if rnd.rand()<self.prob:
-            return x[:,:,:,::-1]
+            return x[::-1,:,:]
         else:
             return x
 
@@ -177,8 +168,8 @@ class Flatten(object):
 
         return x.view(-1)
 
-def get_augmenters(mu=0, std=1):
-    # standard augmenters: rotation, flips, deformations and normalization
+def get_augmenters_2d(augment_noise=True):
+    # standard augmenters: rotation, flips, deformations
 
     # generate seeds for synchronized augmentation
     s1 = np.random.randint(0, 2 ** 32)
@@ -187,19 +178,62 @@ def get_augmenters(mu=0, std=1):
     s4 = np.random.randint(0, 2 ** 32)
 
     # define transforms
-    train_xtransform = transforms.Compose([Rotate90(seed=s1),
-                                           FlipX(seed=s2),
-                                           FlipY(seed=s3),
-                                           RandomDeformations(seed=s4),
-                                           Normalize(mu=mu, std=std),
-                                           ToFloatTensor()])
+    if augment_noise:
+        train_xtransform = transforms.Compose([Rotate90(seed=s1),
+                                               FlipX(seed=s2),
+                                               FlipY(seed=s3),
+                                               RandomDeformations(seed=s4),
+                                               AddNoise(sigma_max=0.2),
+                                               ToFloatTensor()])
+    else:
+        train_xtransform = transforms.Compose([Rotate90(seed=s1),
+                                               FlipX(seed=s2),
+                                               FlipY(seed=s3),
+                                               RandomDeformations(seed=s4),
+                                               ToFloatTensor()])
     train_ytransform = transforms.Compose([Rotate90(seed=s1),
                                            FlipX(seed=s2),
                                            FlipY(seed=s3),
                                            RandomDeformations(seed=s4, thr=True),
                                            ToLongTensor()])
-    test_xtransform = transforms.Compose([Normalize(mu=mu, std=std),
-                                          ToFloatTensor()])
+    test_xtransform = transforms.Compose([ToFloatTensor()])
+    test_ytransform = transforms.Compose([ToLongTensor()])
+
+    return train_xtransform, train_ytransform, test_xtransform, test_ytransform
+
+def get_augmenters_3d(augment_noise=True):
+    # standard augmenters: rotation, flips, deformations
+
+    # generate seeds for synchronized augmentation
+    s1 = np.random.randint(0, 2 ** 32)
+    s2 = np.random.randint(0, 2 ** 32)
+    s3 = np.random.randint(0, 2 ** 32)
+    s4 = np.random.randint(0, 2 ** 32)
+    s5 = np.random.randint(0, 2 ** 32)
+
+    # define transforms
+    if augment_noise:
+        train_xtransform = transforms.Compose([Rotate90(seed=s1),
+                                               FlipX(seed=s2),
+                                               FlipY(seed=s3),
+                                               FlipZ(seed=s4),
+                                               RandomDeformations(seed=s5),
+                                               AddNoise(sigma_max=0.2),
+                                               ToFloatTensor()])
+    else:
+        train_xtransform = transforms.Compose([Rotate90(seed=s1),
+                                               FlipX(seed=s2),
+                                               FlipY(seed=s3),
+                                               FlipZ(seed=s4),
+                                               RandomDeformations(seed=s5),
+                                               ToFloatTensor()])
+    train_ytransform = transforms.Compose([Rotate90(seed=s1),
+                                           FlipX(seed=s2),
+                                           FlipY(seed=s3),
+                                           FlipZ(seed=s4),
+                                           RandomDeformations(seed=s5, thr=True),
+                                           ToLongTensor()])
+    test_xtransform = transforms.Compose([ToFloatTensor()])
     test_ytransform = transforms.Compose([ToLongTensor()])
 
     return train_xtransform, train_ytransform, test_xtransform, test_ytransform
