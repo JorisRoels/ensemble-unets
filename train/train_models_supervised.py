@@ -35,10 +35,10 @@ parser.add_argument("--data", help="Dataset for training", type=str, default="ep
 parser.add_argument("--print_stats", help="Number of iterations between each time to log training losses", type=int, default=10)
 
 # network parameters
-parser.add_argument("--input_size_xy", help="Size of the XY blocks that propagate through the network", type=str, default="256,256")
-parser.add_argument("--input_size_zx", help="Size of the XZ blocks that propagate through the network", type=str, default="128,256")
-parser.add_argument("--input_size_yz", help="Size of the YZ blocks that propagate through the network", type=str, default="256,128")
-parser.add_argument("--fm", help="Number of initial feature maps in the segmentation U-Net", type=int, default=64)
+parser.add_argument("--input_size_xy", help="Size of the XY blocks that propagate through the network", type=str, default="512,512")
+parser.add_argument("--input_size_zx", help="Size of the XZ blocks that propagate through the network", type=str, default="160,160")
+parser.add_argument("--input_size_yz", help="Size of the YZ blocks that propagate through the network", type=str, default="160,160")
+parser.add_argument("--fm", help="Number of initial feature maps in the segmentation U-Net", type=int, default=16)
 parser.add_argument("--levels", help="Number of levels in the segmentation U-Net (i.e. number of pooling stages)", type=int, default=4)
 parser.add_argument("--group_norm", help="Use group normalization instead of batch normalization", type=int, default=0)
 parser.add_argument("--augment_noise", help="Use noise augmentation", type=int, default=1)
