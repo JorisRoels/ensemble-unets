@@ -16,6 +16,7 @@ class LabeledVolumeDataset(data.Dataset):
         self.len_epoch = len_epoch
         self.transform = transform
         self.target_transform = target_transform
+        self.orientation = (0,1,2)
 
         self.data = read_tif(data_path, dtype=dtypes[0])
         self.labels = read_tif(label_path, dtype=dtypes[1])
@@ -33,7 +34,12 @@ class LabeledVolumeDataset(data.Dataset):
     def __getitem__(self, i):
 
         # get random sample
-        input, target = sample_labeled_input(self.data, self.labels, self.input_shape)
+        input_shape = (self.input_shape[self.orientation[0]],
+                       self.input_shape[self.orientation[1]],
+                       self.input_shape[self.orientation[2]])
+        input, target = sample_labeled_input(self.data, self.labels, input_shape)
+        input = np.transpose(input, (self.orientation.index(0), self.orientation.index(1), self.orientation.index(2)))
+        target = np.transpose(target, (self.orientation.index(0), self.orientation.index(1), self.orientation.index(2)))
 
         # perform augmentation if necessary
         if self.transform is not None:
@@ -56,15 +62,6 @@ class LabeledVolumeDataset(data.Dataset):
         std = np.std(self.data)
 
         return mu, std
-
-    # rotates data: (zyx -> yxz, yxz -> xzy, xzy -> zyx)
-    def rotate_data(self):
-        self.data = np.transpose(self.data, (1, 2, 0))
-        self.labels = np.transpose(self.labels, (1, 2, 0))
-
-    # sets the input_shape parameter
-    def set_input_shape(self, input_shape):
-        self.input_shape = input_shape
 
 class UnlabeledVolumeDataset(data.Dataset):
 

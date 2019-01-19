@@ -38,7 +38,7 @@ parser.add_argument("--print_stats", help="Number of iterations between each tim
 parser.add_argument("--input_size_xy", help="Size of the XY blocks that propagate through the network", type=str, default="512,512")
 parser.add_argument("--input_size_zx", help="Size of the XZ blocks that propagate through the network", type=str, default="160,160")
 parser.add_argument("--input_size_yz", help="Size of the YZ blocks that propagate through the network", type=str, default="160,160")
-parser.add_argument("--fm", help="Number of initial feature maps in the segmentation U-Net", type=int, default=16)
+parser.add_argument("--fm", help="Number of initial feature maps in the segmentation U-Net", type=int, default=64)
 parser.add_argument("--levels", help="Number of levels in the segmentation U-Net (i.e. number of pooling stages)", type=int, default=4)
 parser.add_argument("--group_norm", help="Use group normalization instead of batch normalization", type=int, default=0)
 parser.add_argument("--augment_noise", help="Use noise augmentation", type=int, default=1)
@@ -138,8 +138,7 @@ for i in range(3):
     print('[%s] Validating trained network %d...' % (datetime.datetime.now(), i+1))
     test_data = test.data
     test_labels = test.labels
-    # segmentation_last_checkpoint = segment(test_data, net, input_size, batch_size=args.test_batch_size)
-    segmentation_last_checkpoint = np.zeros_like(test_data)
+    segmentation_last_checkpoint = segment(test_data, net, input_size, batch_size=args.test_batch_size)
     j = jaccard(segmentation_last_checkpoint, test_labels)
     d = dice(segmentation_last_checkpoint, test_labels)
     a, p, r, f = accuracy_metrics(segmentation_last_checkpoint, test_labels)
@@ -151,8 +150,7 @@ for i in range(3):
     print('[%s]     Recall: %f' % (datetime.datetime.now(), r))
     print('[%s]     F-score: %f' % (datetime.datetime.now(), f))
     net = torch.load(os.path.join(log_dir, 'best_checkpoint.pytorch'))
-    # segmentation_best_checkpoint = segment(test_data, net, input_size, batch_size=args.test_batch_size)
-    segmentation_best_checkpoint = np.zeros_like(test_data)
+    segmentation_best_checkpoint = segment(test_data, net, input_size, batch_size=args.test_batch_size)
     j = jaccard(segmentation_best_checkpoint, test_labels)
     d = dice(segmentation_best_checkpoint, test_labels)
     a, p, r, f = accuracy_metrics(segmentation_best_checkpoint, test_labels)
@@ -182,17 +180,18 @@ for i in range(3):
         optimizer = optim.Adam(net.parameters(), lr=args.lr)
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=args.step_size, gamma=args.gamma)
 
-        # rotating dataset for next run
-        train.rotate_data()
-
-        # adjusting input shape for next run
+        # adjusting input shape and orientation for next run
         if i==0:
-            train.set_input_shape((1, args.input_size_zx[1], args.input_size_zx[0]))
-            test.set_input_shape((1, args.input_size_zx[1], args.input_size_zx[0]))
+            train_loader.dataset.orientation = (1, 2, 0)
+            test_loader.dataset.orientation = (1, 2, 0)
+            train_loader.dataset.input_shape = (1, args.input_size_zx[1], args.input_size_zx[0])
+            test_loader.dataset.input_shape = (1, args.input_size_zx[1], args.input_size_zx[0])
             input_size = args.input_size_zx
         else:
-            train.set_input_shape((1, args.input_size_yz[1], args.input_size_yz[0]))
-            test.set_input_shape((1, args.input_size_yz[1], args.input_size_yz[0]))
+            train_loader.dataset.orientation = (2, 0, 1)
+            test_loader.dataset.orientation = (2, 0, 1)
+            train_loader.dataset.input_shape = (1, args.input_size_yz[1], args.input_size_yz[0])
+            test_loader.dataset.input_shape = (1, args.input_size_yz[1], args.input_size_yz[0])
             input_size = args.input_size_yz
 
 print('[%s] Finished!' % (datetime.datetime.now()))
