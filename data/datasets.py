@@ -8,7 +8,7 @@ from util.tools import sample_labeled_input, sample_unlabeled_input
 
 class LabeledVolumeDataset(data.Dataset):
 
-    def __init__(self, data_path, label_path, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, dtypes=('uint8','uint8')):
+    def __init__(self, data_path, label_path, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, dtypes=('uint8','uint8')):
 
         self.data_path = data_path
         self.label_path = label_path
@@ -65,7 +65,7 @@ class LabeledVolumeDataset(data.Dataset):
 
 class UnlabeledVolumeDataset(data.Dataset):
 
-    def __init__(self, data_path, input_shape, len_epoch=100, preprocess='z', transform=None, dtype='uint8'):
+    def __init__(self, data_path, input_shape, len_epoch=1000, preprocess='z', transform=None, dtype='uint8'):
 
         self.data_path = data_path
         self.input_shape = input_shape
@@ -110,7 +110,7 @@ class UnlabeledVolumeDataset(data.Dataset):
 
 class EPFLTrainDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None):
         super(EPFLTrainDataset, self).__init__(os.path.join('../data', 'epfl', 'training.tif'),
                                                os.path.join('../data', 'epfl', 'training_groundtruth.tif'),
                                                input_shape,
@@ -121,7 +121,7 @@ class EPFLTrainDataset(LabeledVolumeDataset):
 
 class EPFLTestDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None):
         super(EPFLTestDataset, self).__init__(os.path.join('../data', 'epfl', 'testing.tif'),
                                               os.path.join('../data', 'epfl', 'testing_groundtruth.tif'),
                                               input_shape,
@@ -132,7 +132,7 @@ class EPFLTestDataset(LabeledVolumeDataset):
 
 class EPFLPixelTrainDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None):
         super(EPFLPixelTrainDataset, self).__init__(os.path.join('../data', 'epfl', 'training.tif'),
                                                os.path.join('../data', 'epfl', 'training_groundtruth.tif'),
                                                input_shape,
@@ -160,7 +160,7 @@ class EPFLPixelTrainDataset(LabeledVolumeDataset):
 
 class EPFLPixelTestDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None):
         super(EPFLPixelTestDataset, self).__init__(os.path.join('../data', 'epfl', 'testing.tif'),
                                                     os.path.join('../data', 'epfl', 'testing_groundtruth.tif'),
                                                     input_shape,
@@ -188,7 +188,7 @@ class EPFLPixelTestDataset(LabeledVolumeDataset):
 
 class EMBLMitoTrainDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(EMBLMitoTrainDataset, self).__init__(os.path.join('../data', 'embl', 'data.tif'),
                                                    os.path.join('../data', 'embl', 'mito_labels.tif'),
                                                    input_shape,
@@ -203,7 +203,7 @@ class EMBLMitoTrainDataset(LabeledVolumeDataset):
 
 class EMBLMitoTestDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(EMBLMitoTestDataset, self).__init__(os.path.join('../data', 'embl', 'data.tif'),
                                                    os.path.join('../data', 'embl', 'mito_labels.tif'),
                                                    input_shape,
@@ -218,7 +218,7 @@ class EMBLMitoTestDataset(LabeledVolumeDataset):
 
 class EMBLERTrainDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(EMBLERTrainDataset, self).__init__(os.path.join('../data', 'embl', 'data.tif'),
                                                    os.path.join('../data', 'embl', 'er_labels.tif'),
                                                    input_shape,
@@ -233,7 +233,7 @@ class EMBLERTrainDataset(LabeledVolumeDataset):
 
 class EMBLERTestDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(EMBLERTestDataset, self).__init__(os.path.join('../data', 'embl', 'data.tif'),
                                                   os.path.join('../data', 'embl', 'er_labels.tif'),
                                                   input_shape,
@@ -248,7 +248,7 @@ class EMBLERTestDataset(LabeledVolumeDataset):
 
 class EMBLMitoPixelTrainDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(EMBLMitoPixelTrainDataset, self).__init__(os.path.join('../data', 'embl', 'data.tif'),
                                                    os.path.join('../data', 'embl', 'mito_labels.tif'),
                                                    input_shape,
@@ -280,7 +280,7 @@ class EMBLMitoPixelTrainDataset(LabeledVolumeDataset):
 
 class EMBLMitoPixelTestDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(EMBLMitoPixelTestDataset, self).__init__(os.path.join('../data', 'embl', 'data.tif'),
                                                    os.path.join('../data', 'embl', 'mito_labels.tif'),
                                                    input_shape,
@@ -312,7 +312,7 @@ class EMBLMitoPixelTestDataset(LabeledVolumeDataset):
 
 class EMBLERPixelTrainDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(EMBLERPixelTrainDataset, self).__init__(os.path.join('../data', 'embl', 'data.tif'),
                                                    os.path.join('../data', 'embl', 'er_labels.tif'),
                                                    input_shape,
@@ -344,7 +344,7 @@ class EMBLERPixelTrainDataset(LabeledVolumeDataset):
 
 class EMBLERPixelTestDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(EMBLERPixelTestDataset, self).__init__(os.path.join('../data', 'embl', 'data.tif'),
                                                   os.path.join('../data', 'embl', 'er_labels.tif'),
                                                   input_shape,
@@ -376,7 +376,7 @@ class EMBLERPixelTestDataset(LabeledVolumeDataset):
 
 class VNCTrainDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(VNCTrainDataset, self).__init__(os.path.join('../data', 'vnc', 'data.tif'),
                                                    os.path.join('../data', 'vnc', 'mito_labels.tif'),
                                                    input_shape,
@@ -391,7 +391,7 @@ class VNCTrainDataset(LabeledVolumeDataset):
 
 class VNCTestDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(VNCTestDataset, self).__init__(os.path.join('../data', 'vnc', 'data.tif'),
                                                    os.path.join('../data', 'vnc', 'mito_labels.tif'),
                                                    input_shape,
@@ -406,7 +406,7 @@ class VNCTestDataset(LabeledVolumeDataset):
 
 class VNCPixelTrainDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(VNCPixelTrainDataset, self).__init__(os.path.join('../data', 'vnc', 'data.tif'),
                                                    os.path.join('../data', 'vnc', 'mito_labels.tif'),
                                                    input_shape,
@@ -438,7 +438,7 @@ class VNCPixelTrainDataset(LabeledVolumeDataset):
 
 class VNCPixelTestDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(VNCPixelTestDataset, self).__init__(os.path.join('../data', 'vnc', 'data.tif'),
                                                    os.path.join('../data', 'vnc', 'mito_labels.tif'),
                                                    input_shape,
@@ -470,7 +470,7 @@ class VNCPixelTestDataset(LabeledVolumeDataset):
 
 class MEDTrainDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(MEDTrainDataset, self).__init__(os.path.join('../data', 'med', 'data.tif'),
                                               os.path.join('../data', 'med', 'labels.tif'),
                                               input_shape,
@@ -485,7 +485,7 @@ class MEDTrainDataset(LabeledVolumeDataset):
 
 class MEDTestDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(MEDTestDataset, self).__init__(os.path.join('../data', 'med', 'data.tif'),
                                              os.path.join('../data', 'med', 'labels.tif'),
                                              input_shape,
@@ -500,7 +500,7 @@ class MEDTestDataset(LabeledVolumeDataset):
 
 class MEDPixelTrainDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(MEDPixelTrainDataset, self).__init__(os.path.join('../data', 'med', 'data.tif'),
                                                    os.path.join('../data', 'med', 'labels.tif'),
                                                    input_shape,
@@ -532,7 +532,7 @@ class MEDPixelTrainDataset(LabeledVolumeDataset):
 
 class MEDPixelTestDataset(LabeledVolumeDataset):
 
-    def __init__(self, input_shape, len_epoch=100, preprocess='z', transform=None, target_transform=None, split=0.5):
+    def __init__(self, input_shape, len_epoch=1000, preprocess='z', transform=None, target_transform=None, split=0.5):
         super(MEDPixelTestDataset, self).__init__(os.path.join('../data', 'med', 'data.tif'),
                                                   os.path.join('../data', 'med', 'labels.tif'),
                                                   input_shape,
