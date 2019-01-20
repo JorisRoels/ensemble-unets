@@ -1,5 +1,6 @@
 
 import numpy as np
+import copy
 import torch
 from skimage.color import label2rgb
 
@@ -79,3 +80,36 @@ def load_net(model_file):
 # y is assumed to be a numpy array of integers for the different labels, all zeros will be opaque
 def overlay(x, y, alpha=0.3, bg_label=0):
     return label2rgb(y, image=x, alpha=alpha, bg_label=bg_label, colors=[[0,1,0]])
+
+# returns a sequence of length n (<= 3) depending on the resolution where n is the number of networks in the ensemble
+# the sequence contains 3 elements in total that determine the sampling direction of the network in the ensemble
+# it is possible that one network samples in multiple directions
+# the resolution is provided in (z,y,x) ordering
+def get_sampling_ordering(resolution, input_sizes):
+
+    z, y, x = resolution
+
+    if x==y:
+        if x==z: # x==y, x==z, y==z - train one network
+            return [[[0, 1, 2], [1, 2, 0], [2, 0, 1]]], [[input_sizes[0], input_sizes[1], input_sizes[2]]]
+        else: # x==y, x!=z, y!=z - train two networks
+            return [[[0, 1, 2]],
+                    [[1, 2, 0], [2, 0, 1]]], \
+                   [[input_sizes[0]],
+                    [input_sizes[1], input_sizes[2]]]
+    elif x==z: # x!=y, x==z, y!=z - train two networks
+        return [[[0, 1, 2], [2, 0, 1]],
+                [[1, 2, 0]]], \
+               [[input_sizes[0], input_sizes[2]], [input_sizes[1]]]
+    elif y==z: # x!=y, x!=z, y==z - train two networks
+        return [[[0, 1, 2], [1, 2, 0]],
+                [[2, 0, 1]]], \
+               [[input_sizes[0], input_sizes[1]],
+                [input_sizes[2]]]
+    else: # x!=y, x!=z, y!=z - train three networks
+        return [[[0, 1, 2]],
+                [[1, 2, 0]],
+                [[2, 0, 1]]], \
+               [[input_sizes[0]],
+                [input_sizes[1]],
+                [input_sizes[2]]]

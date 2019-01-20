@@ -25,16 +25,16 @@ def sliding_window(image, step_size, window_size):
     xrange[-1] = image.shape[2] - window_size[2]
 
     # loop over the range
-    bar = pb.ProgressBar(max_value=len(zrange)*len(yrange)*len(xrange))
-    i = 0
+    # bar = pb.ProgressBar(max_value=len(zrange)*len(yrange)*len(xrange))
+    # i = 0
     for z in zrange:
         for y in yrange:
             for x in xrange:
 
                 # yield the current window
                 yield (z, y, x, image[z:z+window_size[0], y:y+window_size[1], x:x+window_size[2]])
-                i += 1
-                bar.update(i)
+                # i += 1
+                # bar.update(i)
 
 # segment a data set with a given network with a sliding window
 # data is assumed a 3D volume
