@@ -38,8 +38,8 @@ parser.add_argument("--print_stats", help="Number of iterations between each tim
 # network parameters
 parser.add_argument("--resolution", help="Pixel resolution of the dataset in (z,y,x) ordering", type=str, default="5,5,5")
 parser.add_argument("--input_size_xy", help="Size of the XY blocks that propagate through the network", type=str, default="1,512,512")
-parser.add_argument("--input_size_zx", help="Size of the XZ blocks that propagate through the network", type=str, default="1,512,512")
-parser.add_argument("--input_size_yz", help="Size of the YZ blocks that propagate through the network", type=str, default="1,512,512")
+parser.add_argument("--input_size_zx", help="Size of the XZ blocks that propagate through the network", type=str, default="1,160,160")
+parser.add_argument("--input_size_yz", help="Size of the YZ blocks that propagate through the network", type=str, default="1,160,160")
 parser.add_argument("--fm", help="Number of initial feature maps in the segmentation U-Net", type=int, default=64)
 parser.add_argument("--levels", help="Number of levels in the segmentation U-Net (i.e. number of pooling stages)", type=int, default=4)
 parser.add_argument("--group_norm", help="Use group normalization instead of batch normalization", type=int, default=0)
